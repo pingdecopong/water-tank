@@ -13,15 +13,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 
 class DefaultController extends Controller
 {
-    /**
-     * @Route("/api/{name}")
-     * @Method({"POST"})
-     * @Template()
-     */
-    public function indexAction($name)
-    {
-        return array('name' => $name);
-    }
+
 
     /**
      * @Route("/api/temp")
@@ -66,7 +58,32 @@ class DefaultController extends Controller
 
         $jsonEncoder = new JsonEncode();
         $response = new Response($jsonEncoder->encode($successJson, 'json'));
-        $response->headers->set('Content-Type', 'application/json');
+        $response->headers->set('Content-Type', 'application/json; charset=utf-8');
+        return $response;
+    }
+
+    /**
+     * @Route("/api/img")
+     */
+    public function imgAction()
+    {
+        /* @var $uploadFile \Symfony\Component\HttpFoundation\File\UploadedFile */
+        $uploadFile = $this->getRequest()->files->get('img');
+
+        if($uploadFile === null){
+            throw $this->createNotFoundException("error.");
+        }
+
+        $filename = $uploadFile->getPathname();
+
+        $successJson = array(
+            'code' => 1,
+            'imgpath' => $filename
+        );
+
+        $jsonEncoder = new JsonEncode();
+        $response = new Response($jsonEncoder->encode($successJson, 'json'));
+        $response->headers->set('Content-Type', 'application/json; charset=utf-8');
         return $response;
     }
 }
